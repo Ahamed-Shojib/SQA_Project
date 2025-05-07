@@ -74,3 +74,13 @@ def test_03_dashboard_header_exists(page):
     assert dashboard_page.is_dashboard_header_visible(), "Dashboard header is not visible"
     assert dashboard_page.get_dashboard_header_text() == "Dashboard", "Dashboard header text is incorrect"
 
+def test_04_directory_navigates_correctly(page):
+    base_url = "https://opensource-demo.orangehrmlive.com/"
+    page.goto(base_url)
+
+    LoginPage(page).login("Admin", "admin123")
+    page.wait_for_url("**/dashboard/index")
+    page.locator('a:has-text("Directory")').click()
+    page.wait_for_url("**/web/index.php/directory/viewDirectory", timeout=5000)
+    assert "/web/index.php/directory/viewDirectory" in page.url, \
+        f"Expected to be on directory view, but current URL is {page.url}"
