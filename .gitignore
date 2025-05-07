@@ -1,0 +1,5 @@
+/.venv
+/https:
+/.pytest_cache
+/__pycache__
+dashboard_error.png
