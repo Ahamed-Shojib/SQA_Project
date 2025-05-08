@@ -75,10 +75,9 @@ def test_03_dashboard_header_exists(page):
     assert dashboard_page.is_dashboard_header_visible(), "Dashboard header is not visible"
     assert dashboard_page.get_dashboard_header_text() == "Dashboard", "Dashboard header text is incorrect"
 
-def test_04_directory_navigates_correctly(page):
+def test_04_directory_navigate(page):
     base_url = "https://opensource-demo.orangehrmlive.com/"
     page.goto(base_url)
-
     LoginPage(page).login("Admin", "admin123")
     page.wait_for_url("**/dashboard/index")
     page.locator('a:has-text("Directory")').click()
@@ -86,10 +85,9 @@ def test_04_directory_navigates_correctly(page):
     assert "/web/index.php/directory/viewDirectory" in page.url, \
         f"Expected to be on directory view, but current URL is {page.url}"
     
-def test_05_my_info_navigates_correctly(page):
+def test_05_my_info_navigate(page):
     base_url = "https://opensource-demo.orangehrmlive.com/"
     page.goto(base_url)
-
     LoginPage(page).login("Admin", "admin123")
     page.wait_for_url("**/dashboard/index")
     page.locator('a:has-text("My Info")').click()
@@ -112,7 +110,6 @@ def test_06_navigate_to_job_details(page):
 def test_07_navigate_to_contact_details(page):
     base_url = "https://opensource-demo.orangehrmlive.com/"
     page.goto(base_url)
-
     LoginPage(page).login("Admin", "admin123")
     page.wait_for_url("**/dashboard/index")
     page.locator('a:has-text("My Info")').click()
@@ -122,7 +119,8 @@ def test_07_navigate_to_contact_details(page):
     assert "/web/index.php/pim/contactDetails/" in page.url, \
         f"Expected to be on Contact Details page, but got {page.url}"
 
-def test_05_search_admin_user(page):
+
+def test_08_search_admin_user(page):
     LoginPage(page).login("Admin", "admin123")
     admin_page = AdminPage(page)
     admin_page.go_to_admin()
@@ -130,7 +128,17 @@ def test_05_search_admin_user(page):
     assert page.locator(".oxd-table-cell").first.is_visible()
 
 
-def test_05_buzz_navigates_correctly(page):
+def test_09_search_admin_profile_page(page):
+    LoginPage(page).login("Admin", "admin123")
+    admin_page = AdminPage(page)
+    admin_page.go_to_admin()
+    admin_page.search_user("Admin")
+    page.wait_for_selector(".oxd-table-cell", timeout=5000)
+    page.screenshot(path="search_admin_user_debug.png")
+    assert page.locator(".oxd-table-cell").first.is_visible(), "No search results found for user 'Admin'"
+
+
+def test_10_buzz_navigate(page):
     base_url = "https://opensource-demo.orangehrmlive.com/"
     page.goto(base_url)
     LoginPage(page).login("Admin", "admin123")
@@ -140,7 +148,7 @@ def test_05_buzz_navigates_correctly(page):
     assert "/web/index.php/buzz/viewBuzz" in page.url, \
         f"Expected to be on Buzz page, but current URL is {page.url}"
 
-def test_06_buzz_navigates_Post_Button(page):
+def test_11_buzz_navigates_Post_Button(page):
     base_url = "https://opensource-demo.orangehrmlive.com/"
     page.goto(base_url)
     LoginPage(page).login("Admin", "admin123")
@@ -152,7 +160,7 @@ def test_06_buzz_navigates_Post_Button(page):
     page.locator("button.oxd-button.oxd-button--medium.oxd-button--main").click()
 
 
-def test_07_buzz_navigates_Share_Button(page):
+def test_12_buzz_navigates_Share_Button(page):
     base_url = "https://opensource-demo.orangehrmlive.com/"
     page.goto(base_url)
     LoginPage(page).login("Admin", "admin123")
@@ -165,22 +173,22 @@ def test_07_buzz_navigates_Share_Button(page):
 
 
 
-def test_07_navigate_to_my_info(page):
+def test_13_navigate_to_my_info(page):
     LoginPage(page).login("Admin", "admin123")
     page.locator("a[href='/web/index.php/pim/viewMyDetails']").click()
     assert "Personal Details" in page.content()
 
-def test_08_logout_button_works(page):
+def test_14_logout_button_works(page):
     LoginPage(page).login("Admin", "admin123")
     page.locator(".oxd-userdropdown-name").click()
     page.locator("a[href='/web/index.php/auth/logout']").click()
     assert page.url.endswith("/auth/login")
 
-def test_09_remember_me_option_not_present(page):
+def test_15_remember_me_option_not_present(page):
     assert not page.is_visible("input[name='rememberMe']")
 
 
-def test_11_cannot_login_with_blank_credentials(page):
+def test_16_cannot_login_with_blank_credentials(page):
     LoginPage(page).login("", "")
     error = page.locator("#app").text_content()
     assert "Required" in error
