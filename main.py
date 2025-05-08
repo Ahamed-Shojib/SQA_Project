@@ -193,6 +193,30 @@ def test_16_cannot_login_with_blank_credentials(page):
     error = page.locator("#app").text_content()
     assert "Required" in error
 
-#====================================================
+
+def test_17_logo_present(page):
+    LoginPage(page).login("Admin", "admin123")
+    page.wait_for_selector(".oxd-brand-banner", timeout=2000)
+    assert page.locator(".oxd-brand-banner").is_visible()
+
+def test_18_user_dropdown_visible(page):
+    LoginPage(page).login("Admin", "admin123")
+    page.locator(".oxd-userdropdown-name").click()
+    page.wait_for_selector(".oxd-dropdown-menu", timeout=5000)
+    assert page.locator(".oxd-dropdown-menu").is_visible()
 
 
+def test_19_employee_list_viewable(page):
+    LoginPage(page).login("Admin", "admin123")
+    admin_page = AdminPage(page)
+    admin_page.go_to_admin()
+    page.locator(".oxd-icon-button.oxd-table-cell-action-space").first.wait_for(state="visible", timeout=5000)
+    page.locator(".oxd-icon-button.oxd-table-cell-action-space").first.click()
+    assert page.locator(".orangehrm-container").is_visible()    
+
+
+def test_20_user_can_navigate_to_leave_module(page):
+    LoginPage(page).login("Admin", "admin123")
+    page.locator("a[href='/web/index.php/leave/viewLeaveModule']").click()
+    page.wait_for_url("**/web/index.php/leave/viewLeaveList", timeout=3000)
+    assert "Leave" in page.locator("h6.oxd-text").text_content()
